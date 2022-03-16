@@ -17,8 +17,6 @@ jobs:
     name: Checking manifest and deps
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      TERM: dumb
 
     steps:
       - name: Checkout
@@ -28,8 +26,12 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
-      - name: Static Analysis
-        uses: natiginfo/action-detekt-all@1.19.0
+
+      - name: Detekt
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: detekt
+
       - name: Unit tests
         run: ./gradlew test
       - name: Build with Gradle
