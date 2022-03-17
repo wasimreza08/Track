@@ -3,17 +3,17 @@ buildscript {
     apply from: 'buildsystem/configurations.gradle'
     apply from: 'buildsystem/dependencies.gradle'
 
-
     repositories {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
+
     dependencies {
         def buildDependencies = rootProject.buildDependencies
         classpath buildDependencies.hiltGradlePlugin
         //  classpath buildDependencies.serialization
-        // classpath buildDependencies.navigationComponentPlugin
+         classpath buildDependencies.navigationComponentPlugin
     }
 }
 

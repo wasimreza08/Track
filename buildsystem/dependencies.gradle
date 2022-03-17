@@ -13,7 +13,7 @@ ext {
     material_versiom = '1.5.0'
     timber_version = '5.0.1'
     adapter_delegates_version = '4.3.1'
-    vew_binding_version = '1.5.3'
+    view_binding_version = '1.5.3'
     okHttp_version = '4.9.3'
     retrofit2_version = '2.9.0'
     glide_version = '4.12.0'
@@ -58,7 +58,7 @@ ext {
             other    : [
                     timber                              : "com.jakewharton.timber:timber:${timber_version}",
                     adapterDelegates                    : "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:${adapter_delegates_version}",
-                    viewBindingDelegate                 : "com.github.kirich1409:viewbindingpropertydelegate-noreflection:$vew_binding_version",
+                    viewBindingDelegate                 : "com.github.kirich1409:viewbindingpropertydelegate-noreflection:$view_binding_version",
                     okHttp                              : "com.squareup.okhttp3:okhttp:${okHttp_version}",
                     okHttpInterceptor                   : "com.squareup.okhttp3:logging-interceptor:${okHttp_version}",
                     retrofit2                           : "com.squareup.retrofit2:retrofit:${retrofit2_version}",
