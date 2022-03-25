@@ -12,8 +12,8 @@ buildscript {
     dependencies {
         def buildDependencies = rootProject.buildDependencies
         classpath buildDependencies.hiltGradlePlugin
-        //  classpath buildDependencies.serialization
-         classpath buildDependencies.navigationComponentPlugin
+        classpath buildDependencies.serialization
+        classpath buildDependencies.navigationComponentPlugin
     }
 }
 

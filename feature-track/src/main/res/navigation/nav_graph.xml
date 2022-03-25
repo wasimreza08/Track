@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/trackFragment"
-        android:name="com.example.feature_track.TrackFragment"
+        android:name="com.example.featuretrack.view.TrackFragment"
         android:label="TrackFragment" />
 </navigation>

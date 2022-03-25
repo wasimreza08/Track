@@ -1,4 +1,4 @@
-package com.example.feature_track
+package com.example.featuretrack.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

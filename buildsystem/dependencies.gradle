@@ -18,6 +18,7 @@ ext {
     retrofit2_version = '2.9.0'
     glide_version = '4.12.0'
     detekt_version = "1.19.0"
+    chucker_version = "3.5.2"
     //testDependencies
     junit4 = '4.13.2'
     mockk_version = '1.12.2'
@@ -77,6 +78,11 @@ ext {
             mockkAndroid : "io.mockk:mockk-android:${mockk_version}",
             coroutineTest: "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version",
             extJunit     : "androidx.test.ext:junit:${androidx_junit_version}",
+    ]
+
+    developmentDependencies = [
+            chucker  : "com.github.chuckerteam.chucker:library:${chucker_version}",
+            chuckNoOp: "com.github.ChuckerTeam.Chucker:library-no-op:${chucker_version}"
     ]
 
 }

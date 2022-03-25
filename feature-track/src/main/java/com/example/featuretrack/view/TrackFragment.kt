@@ -1,10 +1,13 @@
-package com.example.feature_track
+package com.example.featuretrack.view
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.core.delegate.viewBinding
+import com.example.feature_track.R
 import com.example.feature_track.databinding.MapFragmentBinding
+import com.example.featuretrack.viewmodel.TrackViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -17,6 +20,7 @@ class TrackFragment : Fragment(R.layout.map_fragment), OnMapReadyCallback,
 
     private lateinit var mMap: GoogleMap
     private val binding: MapFragmentBinding by viewBinding(MapFragmentBinding::bind)
+    private val viewModel: TrackViewModel by viewModels()
     //private val mViewModel: SharedViewModel by viewModels()
     // private val mNormalMarkers: ArrayList<Marker> = ArrayList()
     //private  var mSelectedVehicle:UiVehicleData? = null
@@ -27,7 +31,8 @@ class TrackFragment : Fragment(R.layout.map_fragment), OnMapReadyCallback,
         binding.googleMap.onCreate(savedInstanceState)
         binding.googleMap.getMapAsync(this)
         binding.googleMap.onResume()
-        val standardBottomSheetBehavior = BottomSheetBehavior.from(binding.sheet.standardBottomSheet )
+        val standardBottomSheetBehavior =
+            BottomSheetBehavior.from(binding.sheet.standardBottomSheet)
         standardBottomSheetBehavior.isHideable = false
         standardBottomSheetBehavior.peekHeight = 150
         standardBottomSheetBehavior.isDraggable = true
@@ -37,6 +42,7 @@ class TrackFragment : Fragment(R.layout.map_fragment), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.setOnCameraIdleListener(this)
+        viewModel.loadData()
         //addSelectedVehicle()
         // mViewModel.fetchVehicles().observe(viewLifecycleOwner) { onObserved(it) }
     }

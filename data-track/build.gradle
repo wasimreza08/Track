@@ -1,5 +1,17 @@
+plugins {
+    id 'kotlinx-serialization'
+}
 apply from: "$rootDir/buildsystem/android-library.gradle"
 
+android {
+
+    defaultConfig {
+
+        buildConfigField "String", "API_KEY","\"9ef7d5b3-21c7-4a78-a92b-91efef42cabb\""
+
+        buildConfigField "String", "BASE_URL","\"https://api.jsonstorage.net/v1/json/\""
+    }
+}
 
 dependencies {
     def commonDependencies = rootProject.ext.commonDependencies
@@ -10,6 +22,10 @@ dependencies {
     implementation commonDependencies.other.okHttp
     implementation commonDependencies.other.okHttpInterceptor
     implementation project(path: ':core')
+
+    // dev tool
+    debugImplementation developmentDependencies.chucker
+    releaseImplementation developmentDependencies.chuckNoOp
 
     //test
     def commonTestDependencies = rootProject.ext.commonTestDependencies
