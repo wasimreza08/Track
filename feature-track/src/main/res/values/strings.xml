@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Track</string>
+    <string name="title_activity_track">TrackActivity</string>
+    <string name="title_location_logic">We need your location</string>
+    <string name="unable_title">We cannot find your location</string>
+    <string name="unable_message">We cannot continue without your location.
+        You can enable the location from settings by clicking continue button</string>
+    <string name="message_location_logic">We can show you the nearest vehicle by accessing your
+        location. Do you want give the permission?</string>
+    <string name="yes">Yes</string>
+    <string name="no">no</string>
+    <string name="gps_not_enable_message">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="max_speed">Maximum Speed: %d km</string>
+    <string name="battery_level">Battery Level: %d</string>
+    <string name="has_helmet_box">This vehicle has Helmet Box</string>
+    <string name="no_helmet_box">This vehicle has no Helmet Box</string>
+    <string name="refresh">refresh</string>
+    <string name="network_error">There is either a problem with internet or server is unavailable</string>
+    <string name="unknown_error">We cannot show search result for some unknown error</string>
+    <string name="your_position">your position</string>
+    <string name="vehicle_image">vehicle image</string>
+    <string name="where_are_you">Where are you?</string>
+    <string name="continue_text">Continue</string>
+</resources>

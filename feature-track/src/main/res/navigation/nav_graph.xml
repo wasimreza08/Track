@@ -2,10 +2,22 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/trackFragment">
+    app:startDestination="@id/permissionFragment">
 
     <fragment
+        android:id="@+id/permissionFragment"
+        android:name="com.example.featuretrack.ui.permission.PermissionFragment"
+        android:label="PermissionFragment" >
+        <action
+            android:id="@+id/action_permissionFragment_to_trackFragment"
+            app:destination="@id/trackFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/trackFragment"
-        android:name="com.example.featuretrack.view.TrackFragment"
-        android:label="TrackFragment" />
+        android:name="com.example.featuretrack.ui.map.TrackFragment"
+        android:label="TrackFragment" >
+        <argument
+            android:name="location"
+            app:argType="com.example.featuretrack.model.GeoLocation" />
+    </fragment>
 </navigation>

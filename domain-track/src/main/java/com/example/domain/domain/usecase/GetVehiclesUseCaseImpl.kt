@@ -15,12 +15,12 @@ class GetVehiclesUseCaseImpl @Inject constructor(
 ) : GetVehiclesUseCase {
     override fun execute(): Flow<GetVehiclesUseCase.Output> {
         return repository.getVehicles().map { vehicleList ->
-            GetVehiclesUseCase.Output.Success(vehicleList)
+            GetVehiclesUseCase.Output.Success(vehicleList) as GetVehiclesUseCase.Output
         }.catch { exception ->
             if (exception.isNetworkException()) {
-                GetVehiclesUseCase.Output.NetworkError
+                emit(GetVehiclesUseCase.Output.NetworkError)
             } else {
-                GetVehiclesUseCase.Output.UnknownError(exception.message.orEmpty())
+                emit(GetVehiclesUseCase.Output.UnknownError(exception.message.orEmpty()))
             }
         }.flowOn(mainDispatcherProvider.io())
     }

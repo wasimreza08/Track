@@ -1,40 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="100dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <FrameLayout
+    <androidx.cardview.widget.CardView
         android:id="@+id/standard_bottom_sheet"
         style="?attr/bottomSheetStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFF"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-        <!-- Bottom sheet contents. -->
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_8"
+        android:paddingBottom="@dimen/dimen_8"
+        app:cardCornerRadius="@dimen/dimen_8">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/iv_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="@dimen/dimen_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_margin="16dp"
-                android:text="Title ndfviafivbidbv" />
+                tools:src = "@drawable/ic_scooter"
+                android:contentDescription="@string/vehicle_image" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text"
-                android:layout_margin="16dp"
-                android:text="Support Text" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_type"
+                style="@style/BottomSheetTextView"
+                android:layout_marginTop="@dimen/dimen_16"
+                app:layout_constraintStart_toEndOf="@+id/iv_image"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="type" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_battery_level"
+                style="@style/BottomSheetTextView"
+                app:layout_constraintStart_toEndOf="@+id/iv_image"
+                app:layout_constraintTop_toBottomOf="@+id/tv_type"
+                tools:text="@string/battery_level" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_max_speed"
+                style="@style/BottomSheetTextView"
+                app:layout_constraintStart_toEndOf="@+id/iv_image"
+                app:layout_constraintTop_toBottomOf="@+id/tv_battery_level"
+                tools:text="@string/max_speed" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_has_helmet_box"
+                style="@style/BottomSheetTextView"
+                app:layout_constraintStart_toEndOf="@+id/iv_image"
+                app:layout_constraintTop_toBottomOf="@+id/tv_max_speed"
+                tools:text="@string/has_helmet_box" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </FrameLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
