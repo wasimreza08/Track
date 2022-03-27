@@ -81,15 +81,12 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.effect.collect { effect ->
                     when (effect) {
-                        is TrackContract.Effect.RetryLocationAccessEffect -> initiateLocationAccess()
+                        is TrackContract.Effect.InitLocationAccessEffect -> initiateLocationAccess()
                         is TrackContract.Effect.NetworkErrorEffect -> {
                             showSnackBar(getString(R.string.network_error))
                         }
                         is TrackContract.Effect.UnknownErrorEffect -> {
                             showSnackBar(getString(R.string.unknown_error))
-                        }
-                        is TrackContract.Effect.FragmentStartEffect -> {
-                            initiateLocationAccess()
                         }
                         is TrackContract.Effect.OpenApplicationSettingsEffect -> {
                             startApplicationSettings()

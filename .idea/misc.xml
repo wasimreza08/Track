@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.14114583333333333" />
         <entry key="feature-track/src/main/res/layout/activity_track.xml" value="0.22871376811594202" />
         <entry key="feature-track/src/main/res/layout/bottom_sheet.xml" value="0.14114583333333333" />
+        <entry key="feature-track/src/main/res/layout/fragment_map.xml" value="0.14273504273504273" />
         <entry key="feature-track/src/main/res/layout/fragment_permission.xml" value="0.14273504273504273" />
         <entry key="feature-track/src/main/res/layout/map_fragment.xml" value="0.1" />
       </map>

@@ -14,9 +14,14 @@ object TestData {
         hasHelmetBox = false
     )
 
-    val vehicleList = listOf(
-        vehicleInfo,
+    val vehicleListProvided = listOf(
         vehicleInfo.copy(id = "test_2", lat = 100.5, lng = 32.6),
-        vehicleInfo.copy(id = "test_3", lat = 10.5, lng = 54.6)
+        vehicleInfo.copy(id = "test_3", lat = 10.5, lng = 54.6),
+        vehicleInfo,
+    )
+    val vehicleListExpected = listOf(
+        vehicleInfo.copy(distance = 1.0f),
+        vehicleInfo.copy(id = "test_2", lat = 100.5, lng = 32.6, distance = 2.0f),
+        vehicleInfo.copy(id = "test_3", lat = 10.5, lng = 54.6, distance = 3.0f),
     )
 }

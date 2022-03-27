@@ -32,7 +32,6 @@ class TrackViewModel @Inject constructor(
                                 nearestVehicle = uiVehicleList.first()
                             )
                         }
-
                     }
                     is GetVehiclesUseCase.Output.NetworkError -> {
                         sendEffect { TrackContract.Effect.NetworkErrorEffect }
@@ -55,9 +54,6 @@ class TrackViewModel @Inject constructor(
             is TrackContract.Event.OnLocationAccessed -> {
                 loadData(event.location)
             }
-            is TrackContract.Event.OnRetry -> {
-                sendEffect { TrackContract.Effect.RetryLocationAccessEffect }
-            }
             is TrackContract.Event.OnMarkerClicked -> {
                 event.marker.title?.let {
                     val items = viewState.value.vehicles.filter { vehicleInfo ->
@@ -70,8 +66,8 @@ class TrackViewModel @Inject constructor(
                     }
                 }
             }
-            is TrackContract.Event.OnFragmentStart -> {
-                sendEffect { TrackContract.Effect.FragmentStartEffect }
+            is TrackContract.Event.OnFragmentStart, TrackContract.Event.OnRetry -> {
+                sendEffect { TrackContract.Effect.InitLocationAccessEffect }
             }
             is TrackContract.Event.OnNoGpsDialogClicked -> {
                 sendEffect { TrackContract.Effect.OpenLocationSettingsEffect }
@@ -84,18 +80,6 @@ class TrackViewModel @Inject constructor(
             }
             is TrackContract.Event.OnPermissionRationaleDialogClicked -> {
                 sendEffect { TrackContract.Effect.PermissionRequestEffect }
-            }
-            is TrackContract.Event.OnClusterItemClicked -> {
-                event.clusterItem.title?.let {
-                    val items = viewState.value.vehicles.filter { vehicleInfo ->
-                        vehicleInfo.id == it
-                    }
-                    updateState {
-                        copy(
-                            nearestVehicle = items.first()
-                        )
-                    }
-                }
             }
         }.exhaustive
     }

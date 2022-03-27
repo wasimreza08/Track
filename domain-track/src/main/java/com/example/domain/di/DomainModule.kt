@@ -28,12 +28,4 @@ object DomainModule {
     ): GetVehiclesUseCase {
         return GetVehiclesUseCaseImpl(repository, mainDispatcherProvider)
     }
-
-    @Reusable
-    @Provides
-    fun provideGetNearestVehicleUseCase(
-        mainDispatcherProvider: BaseDispatcherProvider
-    ): GetNearestVehicleUseCase {
-        return GetNearestVehicleUseCaseImpl(mainDispatcherProvider)
-    }
 }

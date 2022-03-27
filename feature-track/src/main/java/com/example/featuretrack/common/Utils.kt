@@ -2,10 +2,8 @@ package com.example.featuretrack.common
 
 import com.example.feature_track.R
 import com.example.featuretrack.model.VehicleType
-import kotlin.math.round
 
 object Utils {
-
     fun getVehicleDrawableId(vehicleType: String): Int {
         return when (vehicleType) {
             VehicleType.EBICYCLE.type -> {
@@ -24,8 +22,8 @@ object Utils {
     }
 
     fun meterToKiloMeter(meter: Float): Double {
-        return (meter * 0.001)
+        return (meter * KILO_MULTIPLIER)
     }
 
-
+    const val KILO_MULTIPLIER = 0.001
 }
