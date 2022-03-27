@@ -4,6 +4,7 @@ import android.location.Location
 import com.example.core.viewmodel.ViewEffect
 import com.example.core.viewmodel.ViewEvent
 import com.example.core.viewmodel.ViewState
+import com.example.featuretrack.model.VehicleClusterItem
 import com.example.featuretrack.model.VehicleUiInfo
 import com.google.android.gms.maps.model.Marker
 
@@ -15,15 +16,25 @@ class TrackContract {
     ) : ViewState
 
     sealed class Effect : ViewEffect {
-        data class OnUnknownError(val message: String) : Effect()
-        object OnNetworkError : Effect()
-        object OnRetryLocationAccess : Effect()
+        object FragmentStartEffect : Effect()
+        data class UnknownErrorEffect(val message: String) : Effect()
+        object NetworkErrorEffect : Effect()
+        object RetryLocationAccessEffect : Effect()
+        object OpenApplicationSettingsEffect : Effect()
+        object OpenLocationSettingsEffect : Effect()
+        object PermissionDeniedEffect : Effect()
+        object PermissionRequestEffect : Effect()
     }
 
     sealed class Event : ViewEvent {
         data class OnLocationAccessed(val location: Location) : Event()
-        object OnViewModelInit : Event()
         object OnRetry : Event()
-        data class OnMarkerClickedClicked(val marker: Marker) : Event()
+        object OnPermissionDenied : Event()
+        data class OnMarkerClicked(val marker: Marker) : Event()
+        data class OnClusterItemClicked(val clusterItem: VehicleClusterItem) : Event()
+        object OnUnableDialogClicked : Event()
+        object OnNoGpsDialogClicked : Event()
+        object OnFragmentStart : Event()
+        object OnPermissionRationaleDialogClicked : Event()
     }
 }

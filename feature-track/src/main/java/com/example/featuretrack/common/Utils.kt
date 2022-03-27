@@ -1,10 +1,8 @@
 package com.example.featuretrack.common
 
-import android.content.Context
-import android.location.LocationManager
-import androidx.fragment.app.FragmentActivity
 import com.example.feature_track.R
 import com.example.featuretrack.model.VehicleType
+import kotlin.math.round
 
 object Utils {
 
@@ -25,13 +23,9 @@ object Utils {
         }
     }
 
-    fun isGPSEnabled(activity: FragmentActivity?): Boolean {
-        var locationManager: LocationManager? = null
-
-        if (locationManager == null) {
-            locationManager =
-                activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        }
-        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
+    fun meterToKiloMeter(meter: Float): Double {
+        return (meter * 0.001)
     }
+
+
 }

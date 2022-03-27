@@ -2,6 +2,7 @@ package com.example.featuretrack.mapper
 
 import com.example.core.mapper.Mapper
 import com.example.domain.domain.model.VehicleInfo
+import com.example.featuretrack.common.Utils
 import com.example.featuretrack.model.VehicleClusterItem
 import com.example.featuretrack.model.VehicleUiInfo
 
@@ -18,7 +19,8 @@ class DomainToUiMapper : Mapper<VehicleInfo, VehicleUiInfo> {
             ),
             maxSpeed = from.maxSpeed,
             vehicleType = from.vehicleType,
-            hasHelmetBox = from.hasHelmetBox
+            hasHelmetBox = from.hasHelmetBox,
+            distance = from.distance?.let { Utils.meterToKiloMeter(it) } ?: -1.0
         )
     }
 }

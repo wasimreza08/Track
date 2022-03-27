@@ -8,5 +8,6 @@ data class VehicleInfo(
     val lng: Double,
     val maxSpeed: Int,
     val vehicleType: String,
-    val hasHelmetBox: Boolean
+    val hasHelmetBox: Boolean,
+    var distance: Float? = null
 )

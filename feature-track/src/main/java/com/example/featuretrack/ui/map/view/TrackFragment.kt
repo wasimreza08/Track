@@ -1,24 +1,24 @@
-package com.example.featuretrack.ui.map
+package com.example.featuretrack.ui.map.view
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.navArgs
 import com.example.core.delegate.viewBinding
 import com.example.core.ext.doNotLeak
 import com.example.core.ext.exhaustive
@@ -30,9 +30,7 @@ import com.example.featuretrack.model.VehicleUiInfo
 import com.example.featuretrack.ui.map.viewmodel.TrackContract
 import com.example.featuretrack.ui.map.viewmodel.TrackViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -46,7 +44,6 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
@@ -57,29 +54,25 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     private val viewModel: TrackViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var cancellationTokenSource: CancellationTokenSource
-    private lateinit var locationCallback: LocationCallback
+
     private lateinit var clusterManager: ClusterManager<VehicleClusterItem>
 
     companion object {
         private const val MAP_INITIAL_ZOOM_LEVEL = 12f
+        private const val ZOOM_INCREASED_LEVEL = 3f
+        private const val PACKAGE = "package"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.googleMap.onCreate(savedInstanceState)
         binding.googleMap.getMapAsync(this)
-        // todo where is the best place to call it
         binding.googleMap.onResume()
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        locationCallback = initLocationCallback()
         binding.btnRetry.setOnClickListener {
             viewModel.onEvent(TrackContract.Event.OnRetry)
         }
-        val safeArgs: TrackFragmentArgs by navArgs()
-        val userLocation = Location("user location")
-        userLocation.latitude = safeArgs.location.lat
-        userLocation.latitude = safeArgs.location.lng
-        viewModel.onEvent(TrackContract.Event.OnLocationAccessed(userLocation))
         observeEffect()
     }
 
@@ -88,12 +81,27 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.effect.collect { effect ->
                     when (effect) {
-                        is TrackContract.Effect.OnRetryLocationAccess -> initiateLocationAccess()
-                        is TrackContract.Effect.OnNetworkError -> {
+                        is TrackContract.Effect.RetryLocationAccessEffect -> initiateLocationAccess()
+                        is TrackContract.Effect.NetworkErrorEffect -> {
                             showSnackBar(getString(R.string.network_error))
                         }
-                        is TrackContract.Effect.OnUnknownError -> {
+                        is TrackContract.Effect.UnknownErrorEffect -> {
                             showSnackBar(getString(R.string.unknown_error))
+                        }
+                        is TrackContract.Effect.FragmentStartEffect -> {
+                            initiateLocationAccess()
+                        }
+                        is TrackContract.Effect.OpenApplicationSettingsEffect -> {
+                            startApplicationSettings()
+                        }
+                        is TrackContract.Effect.OpenLocationSettingsEffect -> {
+                            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                        }
+                        is TrackContract.Effect.PermissionDeniedEffect -> {
+                            showUnableDialog()
+                        }
+                        is TrackContract.Effect.PermissionRequestEffect -> {
+                            requestLocationPermission()
                         }
                     }.exhaustive
                 }
@@ -128,11 +136,11 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     }
 
     private fun addNearestVehicleInfo(nearestVehicle: VehicleUiInfo) {
-        Timber.e("nearest vehicle $nearestVehicle")
         with(binding.sheet) {
             tvType.text = nearestVehicle.vehicleType
             tvMaxSpeed.text = getString(R.string.max_speed, nearestVehicle.maxSpeed)
             tvBatteryLevel.text = getString(R.string.battery_level, nearestVehicle.batteryLevel)
+            tvDistance.text = getString(R.string.distance, nearestVehicle.distance)
             tvHasHelmetBox.text = if (nearestVehicle.hasHelmetBox) {
                 getString(R.string.has_helmet_box)
             } else {
@@ -142,6 +150,7 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
         }
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     private fun setUpClusterer(vehicleList: List<VehicleUiInfo>) {
         // Position the map.
         val markerManager = markerManager()
@@ -165,21 +174,13 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     override fun onStart() {
         super.onStart()
         cancellationTokenSource = CancellationTokenSource()
-        initiateLocationAccess()
+        viewModel.onEvent(TrackContract.Event.OnFragmentStart)
     }
 
     private fun initiateLocationAccess() {
-        val isNeeded = activity?.let {
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                it,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        }
-        Timber.e("permission needed $isNeeded")
         if (checkPermission()) {
             // access location
             accessUserLocation()
-            Timber.e("access location")
         } else {
             showPermissionRationaleDialog()
         }
@@ -204,16 +205,15 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
 
     @SuppressLint("MissingPermission")
     private fun accessUserLocation() {
-        if (Utils.isGPSEnabled(activity)) {
+        if (isGPSEnabled()) {
             fusedLocationClient
             fusedLocationClient.getCurrentLocation(
                 LocationRequest.PRIORITY_HIGH_ACCURACY,
                 cancellationTokenSource.token
             ).addOnSuccessListener { location ->
                 location?.let {
-                    moveToMap(LatLng(location.latitude, location.longitude))
+                    addUserLocationMarker(LatLng(it.latitude, it.longitude))
                     viewModel.onEvent(TrackContract.Event.OnLocationAccessed(location))
-                    Timber.e("location: ${location.latitude}")
                 }
             }
         } else {
@@ -221,32 +221,39 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
         }
     }
 
-    private fun initLocationCallback(): LocationCallback {
-        return object : LocationCallback() {
-            override fun onLocationResult(result: LocationResult) {
-                result.lastLocation.also { location ->
-                    moveToMap(LatLng(location.latitude, location.longitude))
-                }
-            }
+    private fun isGPSEnabled(): Boolean {
+        var locationManager: LocationManager? = null
+
+        if (locationManager == null) {
+            locationManager =
+                activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
         }
+        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
     }
 
     private fun markerManager(): MarkerManager {
         return object : MarkerManager(this.googleMap) {
             override fun onMarkerClick(marker: Marker): Boolean {
-                Timber.e("marker clicked: ${marker.title}")
-                viewModel.onEvent(TrackContract.Event.OnMarkerClickedClicked(marker))
+                val currentZoom = googleMap.cameraPosition.zoom
+                if (marker.title == null) {
+                    moveToMap(marker.position, currentZoom + ZOOM_INCREASED_LEVEL)
+                }
+                viewModel.onEvent(TrackContract.Event.OnMarkerClicked(marker))
                 return super.onMarkerClick(marker)
             }
         }
     }
 
-    private fun moveToMap(latLng: LatLng, mapZoom: Float = MAP_INITIAL_ZOOM_LEVEL) {
+    private fun addUserLocationMarker(latLng: LatLng) {
         googleMap.addMarker(
             MarkerOptions()
                 .position(latLng)
                 .title(getString(R.string.your_position))
         )
+        moveToMap(latLng)
+    }
+
+    private fun moveToMap(latLng: LatLng, mapZoom: Float = MAP_INITIAL_ZOOM_LEVEL) {
         googleMap.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(latLng.latitude, latLng.longitude),
@@ -262,7 +269,9 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
             setMessage(getString(R.string.message_location_logic))
             setButton(
                 DialogInterface.BUTTON_POSITIVE, getString(R.string.yes)
-            ) { _, _ -> requestLocationPermission() }
+            ) { _, _ ->
+                viewModel.onEvent(TrackContract.Event.OnPermissionRationaleDialogClicked)
+            }
             setCancelable(false)
             show()
             doNotLeak(this@TrackFragment)
@@ -287,7 +296,7 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
             ) { dialog, _ ->
                 run {
                     dialog.cancel()
-                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    viewModel.onEvent(TrackContract.Event.OnNoGpsDialogClicked)
                 }
             }
 
@@ -296,21 +305,42 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
         alert.doNotLeak(this)
     }
 
+    private fun startApplicationSettings() {
+        startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                this.data = Uri.fromParts(PACKAGE, activity?.packageName, null)
+            }
+        )
+    }
+
     private val requestMultiplePermissions =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             if (permissions.entries.first().value && permissions.entries.last().value) {
                 accessUserLocation()
-                Timber.e("DEBUG permission accepted")
             } else {
-                Timber.e("DEBUG permission not accepted")
+                viewModel.onEvent(TrackContract.Event.OnPermissionDenied)
             }
         }
 
     override fun onStop() {
         super.onStop()
         cancellationTokenSource.cancel()
+    }
+
+    private fun showUnableDialog() {
+        val alertDialog = AlertDialog.Builder(requireContext()).create()
+        alertDialog.run {
+            setTitle(getString(R.string.unable_title))
+            setMessage(getString(R.string.unable_message))
+            setButton(
+                DialogInterface.BUTTON_POSITIVE, getString(R.string.continue_text)
+            ) { _, _ -> viewModel.onEvent(TrackContract.Event.OnUnableDialogClicked) }
+            setCancelable(false)
+            show()
+            doNotLeak(this@TrackFragment)
+        }
     }
 
     override fun onCameraIdle() {

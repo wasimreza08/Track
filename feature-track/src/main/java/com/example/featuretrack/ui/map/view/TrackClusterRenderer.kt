@@ -1,4 +1,4 @@
-package com.example.featuretrack.ui.map
+package com.example.featuretrack.ui.map.view
 
 import android.content.Context
 import com.example.featuretrack.common.Utils

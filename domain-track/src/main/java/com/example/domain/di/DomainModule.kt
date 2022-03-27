@@ -3,8 +3,6 @@ package com.example.domain.di
 import com.example.core.dispatcher.BaseDispatcherProvider
 import com.example.core.dispatcher.MainDispatcherProvider
 import com.example.domain.domain.repository.Repository
-import com.example.domain.domain.usecase.GetNearestVehicleUseCase
-import com.example.domain.domain.usecase.GetNearestVehicleUseCaseImpl
 import com.example.domain.domain.usecase.GetVehiclesUseCase
 import com.example.domain.domain.usecase.GetVehiclesUseCaseImpl
 import dagger.Module

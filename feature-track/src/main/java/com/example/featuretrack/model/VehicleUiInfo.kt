@@ -6,5 +6,6 @@ data class VehicleUiInfo(
     val clusterItem: VehicleClusterItem,
     val maxSpeed: Int,
     val vehicleType: String,
-    val hasHelmetBox: Boolean
+    val hasHelmetBox: Boolean,
+    val distance: Double
 )

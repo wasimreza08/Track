@@ -28,6 +28,7 @@
                 android:layout_marginTop="@dimen/dimen_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="@dimen/dimen_16"
                 tools:src = "@drawable/ic_scooter"
                 android:contentDescription="@string/vehicle_image" />
 
@@ -58,6 +59,13 @@
                 style="@style/BottomSheetTextView"
                 app:layout_constraintStart_toEndOf="@+id/iv_image"
                 app:layout_constraintTop_toBottomOf="@+id/tv_max_speed"
+                tools:text="@string/has_helmet_box" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_distance"
+                style="@style/BottomSheetTextView"
+                app:layout_constraintStart_toEndOf="@+id/iv_image"
+                app:layout_constraintTop_toBottomOf="@+id/tv_has_helmet_box"
                 tools:text="@string/has_helmet_box" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

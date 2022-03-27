@@ -2,8 +2,6 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 apply from: "$rootDir/buildsystem/android-library.gradle"
-apply plugin: 'kotlin-parcelize'
-apply plugin: "androidx.navigation.safeargs.kotlin"
 
 dependencies {
 
