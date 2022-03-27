@@ -90,7 +90,7 @@ ext {
 
     developmentDependencies = [
             chucker  : "com.github.chuckerteam.chucker:library:${chucker_version}",
-            chuckNoOp: "com.github.ChuckerTeam.Chucker:library-no-op:${chucker_version}"
+            chuckNoOp: "com.github.chuckerteam.chucker:library-no-op:${chucker_version}"
     ]
 
 }
