@@ -25,5 +25,5 @@ object Utils {
         return (meter * KILO_MULTIPLIER)
     }
 
-    const val KILO_MULTIPLIER = 0.001
+    private const val KILO_MULTIPLIER = 0.001
 }
