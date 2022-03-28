@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetVehiclesUseCaseImpl @Inject constructor(
@@ -50,7 +49,7 @@ class GetVehiclesUseCaseImpl @Inject constructor(
                 nearestVehicleIndex = index
             }
         }
-        Timber.e("nearest distance index: $nearestVehicleIndex, distance: $$nearestDistance")
+
         val nearestVehicle = vehicleList[nearestVehicleIndex]
         mutableVehicleList.removeAt(nearestVehicleIndex)
         mutableVehicleList.add(0, nearestVehicle)

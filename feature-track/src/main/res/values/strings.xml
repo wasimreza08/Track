@@ -9,6 +9,7 @@
         location. Do you want give the permission?</string>
     <string name="yes">Yes</string>
     <string name="no">no</string>
+    <string name="gps_not_enable_title">GPS is off</string>
     <string name="gps_not_enable_message">Your GPS seems to be disabled, do you want to enable it?</string>
     <string name="max_speed">Maximum Speed: %d km/h</string>
     <string name="battery_level">Battery Level: %d</string>

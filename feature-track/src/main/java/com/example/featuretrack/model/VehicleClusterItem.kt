@@ -15,11 +15,11 @@ data class VehicleClusterItem(
         return position
     }
 
-    override fun getTitle(): String? {
+    override fun getTitle(): String {
         return titleString
     }
 
-    override fun getSnippet(): String? {
+    override fun getSnippet(): String {
         return snippetString
     }
 }

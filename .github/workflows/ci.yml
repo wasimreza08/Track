@@ -30,6 +30,14 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: detekt
+      - name: ktlint check
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ktlintCheck
+      - name: ktlint format check
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ktlintFormat
       - name: Unit tests
         run: ./gradlew test
       - name: Build with Gradle

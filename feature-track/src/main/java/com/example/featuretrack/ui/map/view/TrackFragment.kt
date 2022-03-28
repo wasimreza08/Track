@@ -260,19 +260,12 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     }
 
     private fun showPermissionRationaleDialog() {
-        val alertDialog = AlertDialog.Builder(requireContext()).create()
-        alertDialog.run {
-            setTitle(getString(R.string.title_location_logic))
-            setMessage(getString(R.string.message_location_logic))
-            setButton(
-                DialogInterface.BUTTON_POSITIVE, getString(R.string.yes)
-            ) { _, _ ->
-                viewModel.onEvent(TrackContract.Event.OnPermissionRationaleDialogClicked)
-            }
-            setCancelable(false)
-            show()
-            doNotLeak(this@TrackFragment)
-        }
+        createDialog(
+            getString(R.string.title_location_logic),
+            getString(R.string.message_location_logic),
+            getString(R.string.yes),
+            TrackContract.Event.OnPermissionRationaleDialogClicked
+        )
     }
 
     private fun requestLocationPermission() {
@@ -285,21 +278,12 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     }
 
     private fun buildDialogNoGps() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setMessage(getString(R.string.gps_not_enable_message))
-            .setCancelable(false)
-            .setPositiveButton(
-                getString(R.string.yes)
-            ) { dialog, _ ->
-                run {
-                    dialog.cancel()
-                    viewModel.onEvent(TrackContract.Event.OnNoGpsDialogClicked)
-                }
-            }
-
-        val alert = builder.create()
-        alert.show()
-        alert.doNotLeak(this)
+        createDialog(
+            getString(R.string.gps_not_enable_title),
+            getString(R.string.gps_not_enable_message),
+            getString(R.string.yes),
+            TrackContract.Event.OnNoGpsDialogClicked
+        )
     }
 
     private fun startApplicationSettings() {
@@ -327,16 +311,30 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     }
 
     private fun showUnableDialog() {
+        createDialog(
+            getString(R.string.unable_title),
+            getString(R.string.unable_message),
+            getString(R.string.continue_text),
+            TrackContract.Event.OnUnableDialogClicked
+        )
+    }
+
+    private fun createDialog(
+        title: String,
+        message: String,
+        buttonString: String,
+        event: TrackContract.Event
+    ) {
         val alertDialog = AlertDialog.Builder(requireContext()).create()
         alertDialog.run {
-            setTitle(getString(R.string.unable_title))
-            setMessage(getString(R.string.unable_message))
+            setTitle(title)
+            setMessage(message)
             setButton(
-                DialogInterface.BUTTON_POSITIVE, getString(R.string.continue_text)
-            ) { _, _ -> viewModel.onEvent(TrackContract.Event.OnUnableDialogClicked) }
+                DialogInterface.BUTTON_POSITIVE, buttonString
+            ) { _, _ -> viewModel.onEvent(event) }
             setCancelable(false)
             show()
-            doNotLeak(this@TrackFragment)
+            doNotLeak(lifecycleOwner = this@TrackFragment)
         }
     }
 
