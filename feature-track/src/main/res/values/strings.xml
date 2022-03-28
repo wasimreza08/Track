@@ -12,7 +12,7 @@
     <string name="gps_not_enable_title">GPS is off</string>
     <string name="gps_not_enable_message">Your GPS seems to be disabled, do you want to enable it?</string>
     <string name="max_speed">Maximum Speed: %d km/h</string>
-    <string name="battery_level">Battery Level: %d</string>
+    <string name="battery_level">Battery Level: %d\%%</string>
     <string name="has_helmet_box">This vehicle has Helmet Box</string>
     <string name="distance">Distance: %.1f km</string>
     <string name="no_helmet_box">This vehicle has no Helmet Box</string>
