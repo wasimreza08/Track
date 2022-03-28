@@ -132,6 +132,7 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun addNearestVehicleInfo(nearestVehicle: VehicleUiInfo) {
         with(binding.sheet) {
             tvType.text = nearestVehicle.vehicleType
