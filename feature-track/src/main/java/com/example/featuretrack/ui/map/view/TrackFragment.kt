@@ -117,7 +117,7 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
                     setLoading(viewState.isLoading)
                     viewState.nearestVehicle?.let { addNearestVehicleInfo(it) }
                     if (viewState.vehicles.isNotEmpty()) {
-                        setUpClusterer(viewState.vehicles)
+                        addItems(viewState.vehicles)
                     }
                 }
             }
@@ -149,24 +149,18 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     }
 
     @SuppressLint("PotentialBehaviorOverride")
-    private fun setUpClusterer(vehicleList: List<VehicleUiInfo>) {
-        // Position the map.
+    private fun setUpClusterer() {
         val markerManager = markerManager()
         clusterManager = ClusterManager(context, googleMap, markerManager)
-
-        // Point the map's listeners at the listeners implemented by the cluster
-        // manager.
+        clusterManager.renderer = TrackClusterRenderer(requireContext(), googleMap, clusterManager)
         googleMap.setOnCameraIdleListener(clusterManager)
         googleMap.setOnMarkerClickListener(clusterManager)
-
-        // Add cluster items (markers) to the cluster manager.
-        addItems(vehicleList)
-        clusterManager.renderer = TrackClusterRenderer(requireContext(), googleMap, clusterManager)
     }
 
     private fun addItems(vehicleList: List<VehicleUiInfo>) {
         val clusterItems = vehicleList.map { it.clusterItem }
         clusterManager.addItems(clusterItems)
+        clusterManager.cluster()
     }
 
     override fun onStart() {
@@ -187,6 +181,7 @@ class TrackFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         this.googleMap.setOnCameraIdleListener(this)
+        setUpClusterer()
         observeViewState()
     }
 
